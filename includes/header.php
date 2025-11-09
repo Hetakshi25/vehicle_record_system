@@ -171,7 +171,7 @@ if (isset($_SESSION['user_id'])) {
         </li>
 
         <!-- Search bar -->
-       <!-- <li class="nav-item d-none d-lg-block ms-3">
+        <li class="nav-item d-none d-lg-block ms-3">
           <form class="d-flex" action="index.php" method="get" role="search">
             <div class="input-group input-group-sm">
               <input class="form-control search-input" name="search" type="search" placeholder="Search cars">
@@ -180,7 +180,7 @@ if (isset($_SESSION['user_id'])) {
               </button>
             </div>
           </form>
-        </li>-->
+        </li>
 
         <!-- Notifications -->
         <?php if (isset($_SESSION['user_id'])): ?>
