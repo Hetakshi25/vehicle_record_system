@@ -53,5 +53,37 @@ if ($stmt->execute()) {
 }
 $stmt->close();
 
+//notification code
+
+// Fetch vehicle and user info for notifications
+$stmt_v = $conn->prepare("SELECT v.user_id AS sellerId, v.brand, v.model, i.user_id AS buyerId FROM inquiries i JOIN vehicles v ON i.vehicle_id = v.id WHERE i.id=?");
+$stmt_v->bind_param("i", $inquiry_id);
+$stmt_v->execute();
+$res = $stmt_v->get_result();
+if ($row = $res->fetch_assoc()) {
+    $sellerId = $row['sellerId'];
+    $buyerId = $row['buyerId'];
+    $vehicleTitle = $row['brand'] . " " . $row['model'];
+
+    // Notify seller
+    $notifType = 'visit';
+    $notifMessage = "A visit was requested for your vehicle: $vehicleTitle on $visit_date.";
+    $stmt_n = $conn->prepare("INSERT INTO notifications (user_id, type, message, is_read, created_at) VALUES (?, ?, ?, 0, NOW())");
+    $stmt_n->bind_param("iss", $sellerId, $notifType, $notifMessage);
+    $stmt_n->execute();
+    $stmt_n->close();
+
+    // Notify buyer
+    $notifMessage = "Your request for a visit for $vehicleTitle on $visit_date was submitted.";
+    $stmt_n = $conn->prepare("INSERT INTO notifications (user_id, type, message, is_read, created_at) VALUES (?, ?, ?, 0, NOW())");
+    $stmt_n->bind_param("iss", $buyerId, $notifType, $notifMessage);
+    $stmt_n->execute();
+    $stmt_n->close();
+}
+$stmt_v->close();
+
+
+//ends here
+
 header("Location: dashboard.php");
 exit;

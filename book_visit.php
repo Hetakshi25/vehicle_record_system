@@ -15,7 +15,7 @@ $user_id = intval($_SESSION['user_id']); // logged-in buyer
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $inquiry_id = intval($_POST['inquiry_id'] ?? 0);
-    $seller_id  = intval($_POST['seller_id'] ?? 0);
+    $seller_id = intval($_POST['seller_id'] ?? 0);
     $visit_date = trim($_POST['visit_date'] ?? '');
 
     if ($inquiry_id <= 0 || $seller_id <= 0 || empty($visit_date)) {
@@ -45,14 +45,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->bind_param("iiis", $inquiry_id, $user_id, $seller_id, $visit_date);
 
     if ($stmt->execute()) {
-        $_SESSION['flash_success'] = "Your visit request has been submitted!";
+        $_SESSION['flash_success'] = "Your visit request has been submitted!";    
     } else {
         $_SESSION['flash_error'] = "Database error: " . $stmt->error;
     }
 
     $stmt->close();
-    $conn->close();
+    
 
+    $conn->close();
     header("Location: dashboard.php");
     exit;
 } else {

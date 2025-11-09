@@ -69,6 +69,18 @@ if ($response === 'accepted') {
     $deal_id = $stmt->insert_id;
     $stmt->close();
 
+    //new added notification code
+
+    $vehicleTitle = $inq['brand'] . " " . $inq['model'];
+    $notifType = 'offer';
+    $notifMessage = "Your offer for $vehicleTitle has been accepted! Please view your deal summary.";
+    $stmt = $conn->prepare("INSERT INTO notifications (user_id, type, message, is_read, created_at) VALUES (?, ?, ?, 0, NOW())");
+    $stmt->bind_param("iss", $inq['buyer_id'], $notifType, $notifMessage);
+    $stmt->execute();
+    $stmt->close();
+
+    //ends here
+
     // Redirect to deal summary
     header("Location: deal_summary.php?deal_id=" . $deal_id);
     exit;
